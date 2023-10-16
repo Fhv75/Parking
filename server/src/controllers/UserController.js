@@ -22,6 +22,8 @@ class UserController {
 
             const hashedPw = await bcrypt.hash(contraseña, 10)
 
+            const rol = correo_electronico.substring(correo_electronico.indexOf('@') + 1, correo_electronico.indexOf('.', correo_electronico.indexOf('@')) - 1)
+            
             const user = await this.db.usuario.create({
                 data: {
                     correo_electronico: correo_electronico,
@@ -29,9 +31,9 @@ class UserController {
                     rut: rut,
                     contrase_a: hashedPw,
                     telefono: telefono,
-                    rol: 'alumno'
+                    rol: rol
                 },
-                select: { id: true, rut: true }
+                select: { id: true, rut: true, rol: true }
             })
 
             res.status(201).json(user)
