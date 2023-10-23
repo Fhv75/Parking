@@ -8,11 +8,39 @@ datasource db {
 }
 
 model usuario {
-  id                 Int     @id @default(autoincrement())
-  correo_electronico String? @unique @db.VarChar
-  nombre             String? @db.VarChar
-  rut                String? @unique @db.VarChar
-  contrase_a         String? @map("contraseña") @db.VarChar
-  telefono           String? @unique @db.VarChar
-  rol                String? @db.VarChar
+  id                 Int        @id @default(autoincrement())
+  correo_electronico String?    @unique @db.VarChar
+  nombre             String?    @db.VarChar
+  rut                String?    @unique @db.VarChar
+  contrase_a         String?    @map("contraseña") @db.VarChar
+  telefono           String?    @unique @db.VarChar
+  rol                String?    @db.VarChar
+  vehiculo           vehiculo[]
+}
+
+model estacionamiento {
+  id                Int    @id @default(autoincrement())
+  nombre            String @db.VarChar
+  direccion         String @db.VarChar
+  slots_totales     Int?
+  slots_disponibles Int?
+}
+
+model slots {
+  slot_id           Int       @id @default(autoincrement())
+  slot_number       Int
+  status            String    @db.VarChar(20)
+  timestamp_entrada DateTime? @db.Timestamp(6)
+  timestamp_salida  DateTime? @db.Timestamp(6)
+}
+
+model vehiculo {
+  id          Int     @id @default(autoincrement())
+  user_id     Int
+  patente     String  @db.VarChar
+  marca       String  @db.VarChar
+  modelo      String  @db.VarChar
+  color       String? @db.VarChar
+  esta_activo String  @default("si") @db.VarChar
+  usuario     usuario @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

@@ -3,7 +3,6 @@ const UserController = require('../controllers/UserController')
 const loginValidator = require('../middleware/validators/loginValidator')
 const registerValidator = require('../middleware/validators/registerValidator')
 
-
 const router = express.Router()
 const userController = new UserController()
 
