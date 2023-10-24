@@ -49,11 +49,36 @@ class ParkingLotController {
 
     async updateAvailableSlots(req, res) {
         try {
+            const operation = req.updateType
+            let updatedParkingSlot;
 
+            if(operation === 'increase') {
+                updatedParkingSlot = this.db.estacionamiento.update({
+                    where: {
+                        id: 1
+                    },
+                    data: {
+                        slots_disponibles: this.slots_disponibles + 1
+                    }
+                })
+            } else if(operation === 'decrease') {
+                updatedParkingSlot = this.db.estacionamiento.update({
+                    where: {
+                        id: 1
+                    },
+                    data: {
+                        slots_disponibles: this.slots_disponibles - 1
+                    }
+                })
+            }
+
+            res.status(200).json(updatedParkingSlot)
 
         } catch (error) {
+            console.log(error.message)
             res.status(500).json({
-                error: "Server error"
+                message: 'Error al obtener los slots disponibles',
+                error: error.message
             });
         }
     }
