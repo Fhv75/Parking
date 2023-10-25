@@ -6,6 +6,7 @@ class ParkingLotController {
         this.db = getDatabaseConnection()
         this.getParkingLotData = this.getParkingLotData.bind(this)
         this.getAvailableSlots = this.getAvailableSlots.bind(this)
+        this.updateAvailableSlots = this.updateAvailableSlots.bind(this)
     }
 
     async getParkingLotData(req, res) {
@@ -52,24 +53,44 @@ class ParkingLotController {
             const operation = req.updateType
             let updatedParkingSlot;
 
-            if(operation === 'increase') {
-                updatedParkingSlot = this.db.estacionamiento.update({
-                    where: {
-                        id: 1
-                    },
-                    data: {
-                        slots_disponibles: this.slots_disponibles + 1
-                    }
-                })
-            } else if(operation === 'decrease') {
-                updatedParkingSlot = this.db.estacionamiento.update({
-                    where: {
-                        id: 1
-                    },
-                    data: {
-                        slots_disponibles: this.slots_disponibles - 1
-                    }
-                })
+            if (operation === 'increase') {
+                try {
+                    updatedParkingSlot = await this.db.estacionamiento.update({
+                        where: {
+                            id: 1,
+                            slots_disponibles: {
+                                lt: 15
+                            }
+                        },
+                        data: {
+                            slots_disponibles: {
+                                increment: 1
+                            }
+                        }
+                    })
+                } catch (error) {
+                    console.log(error)
+                    res.status(500).json({ message: "Error al incrementar slots", error: error.message })
+                }
+            } else if (operation === 'decrease') {
+                try {
+                    updatedParkingSlot = await this.db.estacionamiento.update({
+                        where: {
+                            id: 1,
+                            slots_disponibles: {
+                                gt: 0
+                            }
+                        },
+                        data: {
+                            slots_disponibles: {
+                                decrement: 1
+                            }
+                        }
+                    })
+                } catch (error) {
+                    console.log(error)
+                    res.status(500).json({ message: "Error al decrementar slots", error: error.message })
+                }
             }
 
             res.status(200).json(updatedParkingSlot)
