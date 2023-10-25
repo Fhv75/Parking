@@ -5,6 +5,7 @@ const path = require('path')
 const userRouter = require('./routes/userRoutes')
 const vehicleRouter = require('./routes/vehicleRoutes')
 const parkingLotRouter = require('./routes/parkingLotRoutes')
+const registryRouter = require('./routes/registryRoutes')
 
 const app = express()
 
@@ -15,7 +16,7 @@ const frontendURL = 'http://localhost:5173'
 
 app.use(cors({ origin: frontendURL }))
 app.use(express.json())
-app.use(userRouter, vehicleRouter, parkingLotRouter)
+app.use(userRouter, vehicleRouter, parkingLotRouter, registryRouter)
 
 app.listen(PORT, () => {
     console.log('app running on port ' + PORT)

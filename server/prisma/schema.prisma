@@ -8,13 +8,14 @@ datasource db {
 }
 
 model usuario {
-  id                 Int        @id @default(autoincrement())
-  correo_electronico String?    @unique @db.VarChar
-  nombre             String?    @db.VarChar
-  rut                String?    @unique @db.VarChar
-  contrase_a         String?    @map("contraseña") @db.VarChar
-  telefono           String?    @unique @db.VarChar
-  rol                String?    @db.VarChar
+  id                 Int         @id @default(autoincrement())
+  correo_electronico String?     @unique @db.VarChar
+  nombre             String?     @db.VarChar
+  rut                String?     @unique @db.VarChar
+  contrase_a         String?     @map("contraseña") @db.VarChar
+  telefono           String?     @unique @db.VarChar
+  rol                String?     @db.VarChar
+  registros          registros[]
   vehiculo           vehiculo[]
 }
 
@@ -35,12 +36,23 @@ model slots {
 }
 
 model vehiculo {
-  id          Int     @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   user_id     Int
-  patente     String  @db.VarChar
-  marca       String  @db.VarChar
-  modelo      String  @db.VarChar
-  color       String? @db.VarChar
-  esta_activo String  @default("si") @db.VarChar
-  usuario     usuario @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patente     String      @db.VarChar
+  marca       String      @db.VarChar
+  modelo      String      @db.VarChar
+  color       String?     @db.VarChar
+  esta_activo String      @default("si") @db.VarChar
+  registros   registros[]
+  usuario     usuario     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model registros {
+  id            Int       @id @default(autoincrement())
+  id_usuario    Int
+  id_vehiculo   Int
+  fecha_ingreso DateTime  @db.Timestamp(6)
+  fecha_salida  DateTime? @db.Timestamp(6)
+  usuario       usuario   @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vehiculo      vehiculo  @relation(fields: [id_vehiculo], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
