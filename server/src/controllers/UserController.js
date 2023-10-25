@@ -45,6 +45,7 @@ class UserController {
 
     async login(req, res) {
         const errors = validationResult(req);
+
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
@@ -57,6 +58,12 @@ class UserController {
                     correo_electronico: correo_electronico
                 },
             })
+
+            if (!user) {
+                return res.status(401).json({
+                    message: 'Falló la autenticación'
+                })
+            }
 
             const validPw = await bcrypt.compare(contraseña, user?.contrase_a)
 
@@ -76,6 +83,7 @@ class UserController {
                 })
             }
         } catch (error) {
+            console.log(error)
             res.status(500).json({ message: 'Error al iniciar sesión', error: error.message })
         }
     }
