@@ -1,12 +1,12 @@
-
+import Navbar from "./components/Navbar/index";
+import Home from "./pages/Home";
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      ola
+      <Navbar />
+      <Home />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
