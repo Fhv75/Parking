@@ -28,17 +28,16 @@ export default function Navbar() {
   return (
     <Box
       w="100%"
-      p={4}
       bg="white"
       color="black"
-      px={{ base: 20, xl: 28 }}
-      py={8}
+      px={{ base: 10, xl: 28 }}
+      py={2}
       shadow={"0px 0px 5px 0px rgba(0,0,0,0.15)"}
     >
       <Flex justifyContent="space-between" alignItems="center">
         <Box>
           <Button variant="none" color="black">
-            <Heading as="h1" size="lg">
+            <Heading as="h1" fontSize="1.65rem">
               Parking UTA
             </Heading>
           </Button>

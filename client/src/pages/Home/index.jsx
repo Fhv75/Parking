@@ -18,9 +18,9 @@ export default function Home() {
       bgSize="cover"
       bgPosition="center"
     >
-      <Flex m="auto" w="460px" h={"calc(100vh - 104px)"}>
-        <LoginModal isOpen={isOpen} onClose={onClose} />
-        <Center>
+      <LoginModal isOpen={isOpen} onClose={onClose} />
+      <Center h={"calc(100vh - 56px)"}>
+        <Flex maxW="440px">
           <VStack borderRadius={20} bg="white" gap={6} p={10}>
             <Heading fontSize="2.2rem">Espacios Disponibles</Heading>
             <Heading fontSize="8rem" color="blue.500">
@@ -30,8 +30,8 @@ export default function Home() {
               Solicitar Acceso
             </Button>
           </VStack>
-        </Center>
-      </Flex>
+        </Flex>
+      </Center>
     </Box>
   );
 }
