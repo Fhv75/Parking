@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AddModal from "./components/AddModal";
+import CarCard from "./components/CarCard";
 import DeleteModal from "./components/DeleteModal";
 
 const VehiclesMenu = () => {
@@ -44,6 +45,7 @@ const VehiclesMenu = () => {
 
   return (
     <>
+      <CarCard />
       <TableContainer bg="gray.100" m={10} borderRadius={20}>
         <Table variant="striped" colorScheme="telegram">
           <Thead>

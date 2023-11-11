@@ -27,6 +27,11 @@ export default function Navbar() {
   } = useDisclosure();
   const navigate = useNavigate();
 
+  const filteredButtons = buttons.filter((button) => {
+    return localStorage.getItem("token") ? button.link : button.type;
+  });
+
+
   return (
     <Box
       w="100%"
@@ -60,27 +65,27 @@ export default function Navbar() {
         </Button>
         <ResponsiveDrawer isOpen={isOpen} onClose={onClose} />
         <SimpleGrid
-          columns={6}
+          columns={localStorage.getItem("token") ? 4 : 2}
           spacing={10}
           display={{ base: "none", lg: "grid" }}
         >
           <RegisterModal isOpen={isRegisterOpen} onClose={onRegisterClose} />
           <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} />
-          {buttons.map((button) => (
-            // Show only buttons that are not 
-            <Button
-              variant="link"
-              size="lg"
-              key={button.name}
-              onClick={() => {
-                if (button.type === "login") onLoginOpen();
-                else if (button.type === "register") onRegisterOpen();
-                else navigate(button.link);
-              }}
-            >
-              {button.name}
-            </Button>
-          ))}
+          {
+            filteredButtons.map((button) => (
+              <Button
+                variant="link"
+                size="lg"
+                key={button.name}
+                onClick={() => {
+                  if (button.type === "login") onLoginOpen();
+                  else if (button.type === "register") onRegisterOpen();
+                  else { button.link === "/" ? button.logout() : navigate(button.link) }
+                }}
+              >
+                {button.name}
+              </Button>
+            ))}
         </SimpleGrid>
       </Flex>
     </Box>
