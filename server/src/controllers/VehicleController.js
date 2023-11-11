@@ -83,7 +83,7 @@ class VehicleController {
             })
 
             res.status(201).json(newVehicle)
-        } 
+        }
         catch(error) {
             console.log(error.message)
             res.status(500).json({

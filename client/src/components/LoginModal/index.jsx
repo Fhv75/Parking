@@ -8,14 +8,15 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -24,30 +25,52 @@ export default function LoginModal({ isOpen, onClose }) {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
   };
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
+      setIsLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/cliente/login",
+        "http://localhost:5000/user/login",
         data
       );
       if (response.status === 201) {
-        //navigate("/home");
+        navigate("/vehiculos");
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
+        toast({
+          title: "Sesión iniciada.",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
       } else {
         console.error("Error en la autenticación:", response.data);
+        toast({
+          title: "Error en la autenticación.",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+        });
       }
     } catch (error) {
-      console.error("Error en la solicitud:", error);
+      console.error("Error al iniciar sesión:");
+      toast({
+        title: "Error al iniciar sesión.",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -63,7 +86,7 @@ export default function LoginModal({ isOpen, onClose }) {
                 <FormLabel>Correo Electrónico</FormLabel>
                 <Input
                   placeholder="example@mail.com"
-                  {...register("email", {
+                  {...register("correo_electronico", {
                     required: "El email es obligatorio",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
@@ -81,7 +104,7 @@ export default function LoginModal({ isOpen, onClose }) {
                 <Input
                   type="password"
                   placeholder="********"
-                  {...register("pass", {
+                  {...register("contraseña", {
                     required: "La contraseña es obligatoria",
                   })}
                 />
@@ -96,6 +119,10 @@ export default function LoginModal({ isOpen, onClose }) {
                 mt={4}
                 colorScheme="telegram"
                 type="submit"
+                isLoading={isLoading}
+                onClick={useEffect(() => {
+                  isLoading ? null : onClose();
+                }, [isLoading, onClose])}
               >
                 Iniciar Sesión
               </Button>
@@ -104,7 +131,13 @@ export default function LoginModal({ isOpen, onClose }) {
                 o
               </Text>
 
-              <Button w={"16rem"} py={6} mb={4} type="button">
+              <Button
+                w={"16rem"}
+                py={6}
+                mb={4}
+                type="button"
+                isLoading={isLoading}
+              >
                 Registrate
               </Button>
             </VStack>

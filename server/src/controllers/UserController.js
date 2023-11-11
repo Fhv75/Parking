@@ -23,7 +23,7 @@ class UserController {
             const hashedPw = await bcrypt.hash(contraseña, 10)
 
             const rol = correo_electronico.substring(correo_electronico.indexOf('@') + 1, correo_electronico.indexOf('.', correo_electronico.indexOf('@')) - 1)
-            
+
             const user = await this.db.usuario.create({
                 data: {
                     correo_electronico: correo_electronico,
@@ -38,8 +38,12 @@ class UserController {
 
             res.status(201).json(user)
         } catch (error) {
-            console.log(error.message)
-            res.status(500).json({ message: 'Error al crear el usuario', error: error.message })
+            if (error.code === "P2002") {
+                res.status(500).json({ message: 'Error al crear el usuario', target: error.meta.target.map((field) => field.replace("_", " ").replace(/^./, field[0].toUpperCase())) })
+            } else {
+                res.status(500).json({ message: 'Error al crear el usuario', error: error.message })
+            }
+            console.log(error)
         }
     }
 

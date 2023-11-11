@@ -4,12 +4,31 @@ import {
   Center,
   Flex,
   Heading,
+  Spinner,
+  Text,
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import LoginModal from "../../components/LoginModal";
 
 export default function Home() {
+  const [slots, setSlots] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/available-slots")
+      .then((response) => {
+        setSlots(response.data.slots_disponibles);
+        setIsLoading(false);
+      })
+      .catch((error) =>
+        console.error("Hubo un error en la carga de slots disponibles", error)
+      );
+  }, []);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box
@@ -20,12 +39,21 @@ export default function Home() {
     >
       <LoginModal isOpen={isOpen} onClose={onClose} />
       <Center h={"calc(100vh - 56px)"}>
-        <Flex maxW="440px">
+        <Flex maxW="460px">
           <VStack borderRadius={20} bg="white" gap={6} p={10}>
-            <Heading fontSize="2.2rem">Espacios Disponibles</Heading>
-            <Heading fontSize="8rem" color="blue.500">
-              30
-            </Heading>
+            <Heading fontSize="2.2rem">Espacios Disponibles:</Heading>
+            <Text fontSize="8rem" color="blue.500">
+              {isLoading ? (
+                <Spinner
+                  width="5.5rem"
+                  height="5.5rem"
+                  thickness="4px"
+                  emptyColor="gray.200"
+                />
+              ) : (
+                slots
+              )}
+            </Text>
             <Button size="lg" colorScheme="telegram" onClick={onOpen}>
               Solicitar Acceso
             </Button>

@@ -1,10 +1,10 @@
 import Navbar from "./components/Navbar/index";
-import Home from "./pages/Home";
+import Router from "./router";
+import routes from './routes/routesConfig';
 function App() {
   return (
     <>
-      <Navbar />
-      <Home />
+      <Router routes={routes}/>
     </>
   );
 }

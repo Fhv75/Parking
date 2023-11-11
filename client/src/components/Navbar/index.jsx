@@ -7,6 +7,7 @@ import {
   SimpleGrid,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import LoginModal from "../LoginModal";
 import RegisterModal from "../RegisterModal";
 import ResponsiveDrawer from "./ResponsiveDrawer";
@@ -24,6 +25,7 @@ export default function Navbar() {
     onOpen: onRegisterOpen,
     onClose: onRegisterClose,
   } = useDisclosure();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -37,7 +39,13 @@ export default function Navbar() {
       <Flex justifyContent="space-between" alignItems="center">
         <Box>
           <Button variant="none" color="black">
-            <Heading as="h1" fontSize="1.65rem">
+            <Heading
+              as="h1"
+              fontSize="1.65rem"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
               Parking UTA
             </Heading>
           </Button>
@@ -52,18 +60,23 @@ export default function Navbar() {
         </Button>
         <ResponsiveDrawer isOpen={isOpen} onClose={onClose} />
         <SimpleGrid
-          columns={2}
+          columns={6}
           spacing={10}
           display={{ base: "none", lg: "grid" }}
         >
           <RegisterModal isOpen={isRegisterOpen} onClose={onRegisterClose} />
           <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} />
           {buttons.map((button) => (
+            // Show only buttons that are not 
             <Button
               variant="link"
               size="lg"
               key={button.name}
-              onClick={button.type === "login" ? onLoginOpen : onRegisterOpen}
+              onClick={() => {
+                if (button.type === "login") onLoginOpen();
+                else if (button.type === "register") onRegisterOpen();
+                else navigate(button.link);
+              }}
             >
               {button.name}
             </Button>
