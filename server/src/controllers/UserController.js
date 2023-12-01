@@ -9,6 +9,10 @@ class UserController {
         this.db = getDatabaseConnection()
         this.createUser = this.createUser.bind(this)
         this.login = this.login.bind(this)
+        this.getUsuarios = this.getUsuarios.bind(this)
+        this.getUsuario = this.getUsuario.bind(this)
+        this.updateUser = this.updateUser.bind(this)
+        this.penalizarUser = this.penalizarUser.bind(this)
     }
 
     async createUser(req, res) {
@@ -68,8 +72,10 @@ class UserController {
                     message: 'Falló la autenticación'
                 })
             }
-
+            console.log(contraseña)
+            console.log(user?.contrase_a)
             const validPw = await bcrypt.compare(contraseña, user?.contrase_a)
+            console.log(validPw)
 
             if (validPw) {
                 const token = jwt.sign({
@@ -80,7 +86,7 @@ class UserController {
                     process.env.JWT_KEY,
                     { expiresIn: '6h' }
                 )
-                return res.status(201).json({ token, userId: user?.id })
+                return res.status(201).json({ token, userId: user?.id, userRol: user?.rol })
             } else {
                 return res.status(401).json({
                     message: 'Falló la autenticación'
@@ -91,6 +97,121 @@ class UserController {
             res.status(500).json({ message: 'Error al iniciar sesión', error: error.message })
         }
     }
+
+    async getUsuarios(req, res) {
+        try {
+            const usuarios = await this.db.usuario.findMany()
+
+            res.status(200).json(usuarios);
+        } catch (error) {
+            console.log(error.message)
+
+            res.status(500).json({
+                message: 'Error al obtener usuarios',
+                error: error.message
+            })
+        }
+    }
+
+    async getUsuario(req, res) {
+        try {
+            const usuarioId = req.params.id
+            const usuario = await this.db.usuario.findUnique({
+                where: {
+                    id: Number(usuarioId)
+                }
+            })
+
+            res.status(200).json(usuario);
+        } catch (error) {
+            console.log(error.message)
+
+            res.status(500).json({
+                message: 'Error al obtener usuario',
+                error: error.message
+            })
+        }
+    }
+
+    async updateUser(req, res) {
+        try {
+            Object.keys(req.body).forEach(key => {
+                if (req.body[key] === "" || req.body[key] === NaN || req.body[key] === undefined) {
+                    delete req.body[key]
+                }
+            })
+            const usuarioId = req.params.id
+            const { correo_electronico, nombre, rut, telefono, contraseña } = req.body
+        
+            let hashedPw
+            if (contraseña) {
+                hashedPw = await bcrypt.hash(contraseña, 10)
+            }
+
+            const usuario = await this.db.usuario.update({
+                where: {
+                    id: Number(usuarioId)
+                },
+                data: {
+                    correo_electronico: correo_electronico,
+                    nombre: nombre,
+                    rut: rut,
+                    telefono: telefono,
+                    contrasen_a: hashedPw
+
+                }
+            })
+
+            res.status(200).json(usuario);
+        } catch (error) {
+            console.log(error.message)
+
+            res.status(500).json({
+                message: 'Error al actualizar usuario',
+                error: error.message
+            })
+        }
+    }
+
+    async penalizarUser(req, res) {
+        try {
+            const usuarioId = req.params.id
+            const usuario = await this.db.usuario.findUnique({
+                where: {
+                    id: Number(usuarioId)
+                }
+            })
+            if (usuario.penalizado === "si") {
+                const update = await this.db.usuario.update({
+                    where: {
+                        id: Number(usuarioId)
+                    },
+                    data: {
+                        penalizado: "no"
+                    }
+                })
+            } else {
+                const update = await this.db.usuario.update({
+                    where: {
+                        id: Number(usuarioId)
+                    },
+                    data: {
+                        penalizado: "si"
+                    }
+                })
+            }
+
+            res.status(200).json(usuario);
+        } catch (error) {
+            console.log(error.message)
+
+            res.status(500).json({
+                message: 'Error al actualizar usuario',
+                error: error.message
+            })
+        }
+    }
+
 }
 
 module.exports = UserController

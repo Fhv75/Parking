@@ -15,6 +15,7 @@ model usuario {
   contrase_a         String?     @map("contraseña") @db.VarChar
   telefono           String?     @unique @db.VarChar
   rol                String?     @db.VarChar
+  penalizado         String?     @db.VarChar
   registros          registros[]
   vehiculo           vehiculo[]
 }

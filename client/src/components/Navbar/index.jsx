@@ -31,6 +31,20 @@ export default function Navbar() {
     return localStorage.getItem("token") ? button.link : button.type;
   });
 
+  let roleButtons = filteredButtons;
+
+  const userRol = localStorage.getItem("userRol");
+  if (localStorage.getItem("token")) {
+    roleButtons = filteredButtons.filter((button) => {
+      if (button.logout) return true;
+      if (userRol === "admin") {
+        return button.admin === true;
+      } else {
+        return button.admin !== true;
+      }
+    });
+  }
+
 
   return (
     <Box
@@ -39,7 +53,7 @@ export default function Navbar() {
       color="black"
       px={{ base: 10, xl: 28 }}
       py={2}
-      shadow={"0px 0px 5px 0px rgba(0,0,0,0.15)"}
+      shadow={"md"}
     >
       <Flex justifyContent="space-between" alignItems="center">
         <Box>
@@ -51,7 +65,7 @@ export default function Navbar() {
                 navigate("/");
               }}
             >
-              Parking UTA
+              COMPARK
             </Heading>
           </Button>
         </Box>
@@ -72,7 +86,7 @@ export default function Navbar() {
           <RegisterModal isOpen={isRegisterOpen} onClose={onRegisterClose} />
           <LoginModal isOpen={isLoginOpen} onClose={onLoginClose} />
           {
-            filteredButtons.map((button) => (
+            roleButtons.map((button) => (
               <Button
                 variant="link"
                 size="lg"

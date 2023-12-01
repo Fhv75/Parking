@@ -10,15 +10,17 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Select,
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-export default function LoginModal({ isOpen, onClose }) {
-  LoginModal.propTypes = {
+export default function AddModal({ isOpen, onClose, users}) {
+  AddModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
   };
@@ -31,6 +33,8 @@ export default function LoginModal({ isOpen, onClose }) {
     formState: { errors },
   } = useForm();
 
+  
+  
   const onSubmit = async (data) => {
     const userId = localStorage.getItem("userId");
     const dataWithUserId = { ...data, userId };
@@ -67,6 +71,16 @@ export default function LoginModal({ isOpen, onClose }) {
         <ModalBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4}>
+              <FormControl>
+                <FormLabel>Usuario</FormLabel>
+                <Select {...register("user")} >
+                  {
+                    users.map((user) => (
+                      <option key={user.id} value={user.id}>{user.correo_electronico}</option>
+                    ))
+                  }
+                </Select>
+              </FormControl>
               <FormControl isInvalid={!!errors.patente}>
                 <FormLabel>Patente</FormLabel>
                 <Input

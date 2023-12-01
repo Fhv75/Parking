@@ -43,9 +43,13 @@ export default function LoginModal({ isOpen, onClose }) {
         data
       );
       if (response.status === 201) {
-        navigate("/vehiculos");
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", response.data.userId);
+        localStorage.setItem("userRol", response.data.userRol);
+        response.data.userRol === "admin"
+          ? navigate("/dashboard")
+          :
+          navigate("/vehiculos");
         toast({
           title: "Sesión iniciada.",
           status: "success",

@@ -12,10 +12,12 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import LoginModal from "../../components/LoginModal";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [slots, setSlots] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -54,7 +56,7 @@ export default function Home() {
                 slots
               )}
             </Text>
-            <Button size="lg" colorScheme="telegram" onClick={onOpen}>
+            <Button size="lg" colorScheme="telegram" onClick={() => { localStorage.getItem("token") ? navigate("/vehiculos") : onOpen }}>
               Solicitar Acceso
             </Button>
           </VStack>

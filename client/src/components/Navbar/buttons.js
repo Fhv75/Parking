@@ -15,8 +15,19 @@ const buttons = [{
         link: "/perfil"
     },
     {
-        name: "Acceder o Salir",
-        link: "/acceder"
+        name: "Peticiones",
+        link: "/peticiones",
+        admin: true
+    },
+    {
+        name: "Gestionar Vehiculos",
+        link: "/gestionarVehiculos",
+        admin: true
+    },
+    {
+        name: "Gestionar Usuarios",
+        link: "/gestionarUsuarios",
+        admin: true
     },
     {
         name: "Cerrar Sesión",

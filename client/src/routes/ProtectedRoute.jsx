@@ -10,10 +10,10 @@ function ProtectedRoute({ roles }) {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/");
     } else {
       axios
-        .get(`http://localhost:5000/cliente/${userId}/role`, {
+        .get(`http://localhost:5000/user/${userId}`, {
           headers: {
             Authorization: `${localStorage.getItem("token")}`,
           },
@@ -25,7 +25,7 @@ function ProtectedRoute({ roles }) {
           console.error("Error al obtener el rol del usuario:", error);
         });
       if (roles && userRole && !roles.includes(userRole)) {
-        navigate("/home");
+        navigate("/");
       }
     }
   }, [isAuthenticated, userId, roles, userRole, navigate]);
